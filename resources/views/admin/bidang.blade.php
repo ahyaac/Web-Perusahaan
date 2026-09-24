@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="id">
+@include('admin.layouts.header')
+<body>
+
+        <!-- Sidebar -->
+        @include('admin.layouts.sidebar')
+
+        <!-- Main Content -->
+        <div style="margin-left: 250px; padding: 2rem 1.5rem; width: calc(100% - 250px);">
+            <h2 class="mb-5">Data Bidang</h2>
+
+            <!-- Tombol Tambah dan Pencarian -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <a href="{{ route('admin/bidang/tambah-bidang') }}" class="btn btn-success">
+                    <i class="bi bi-plus-circle"></i> Tambah Bidang
+                </a>
+                <form action="{{ route('admin/bidang/semua') }}" method="GET" class="d-flex gap-2">
+                    <input type="text" name="search" placeholder="Cari bidang..." class="form-control" value="{{ request()->get('search') }}">
+                    <button type="submit" class="btn btn-primary">Cari</button>
+                </form>
+            </div>
+
+            <!-- Tabel Proyek -->
+            <div class="table-responsive shadow-lg rounded-lg bg-white p-3">
+                <table class="table table-bordered table-hover align-middle text-center">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Nomor</th>
+                            <th>Nama</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($bidang as $bidangs)
+                            <tr>
+                                <td>{{ $loop->index + 1 }}</td>
+                                <td class="text-start">{{ $bidangs->nama_bproyek }}</td>
+                                <td>
+                                <div class="d-flex justify-content-center gap-2">
+                                    <!-- Tombol Edit -->
+                                    <a href="{{ route('admin/bidang/edit', $bidangs->id_bproyek) }}" class="btn btn-warning btn-sm d-flex align-items-center justify-content-center" style="width: 90px;">
+                                        <i class="bi bi-pencil-square me-1"></i> Edit
+                                    </a>
+
+                                    <!-- Tombol Hapus -->
+                                    <form action="{{ route('admin/bidang/hapus-bidang', $bidangs->id_bproyek) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus proyek ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm d-flex align-items-center justify-content-center" style="width: 90px;">
+                                            <i class="bi bi-trash me-1"></i> Hapus
+                                        </button>
+                                    </form>
+                                </div>
+
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="11" class="text-center text-muted">Tidak ada proyek ditemukan.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+           <!-- Pagination -->
+            <div class="mt-4 d-flex justify-content-center">
+                {{ $bidang->appends(['search' => request()->get('search')])->links('pagination::tailwind') }}
+            </div>
+
+            <a href="{{ route('admin.dashboard') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Kembali
+            </a>
+        </div>
+
+</body>
+</html>
